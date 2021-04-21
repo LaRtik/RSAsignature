@@ -68,6 +68,10 @@ int main()
     {
         std::cout << "Message and message prototype are equal. Signed succesfully!\n\n"; 
     }
+    else
+    {
+        std::cout << "Sign is bad. Try again =(";
+    }
 
 
     /*
