@@ -70,7 +70,7 @@ int main()
     }
     else
     {
-        std::cout << "Sign is bad. Try again =(";
+        std::cout << "Sign is bad. Try again =(\n\n";
     }
 
 
