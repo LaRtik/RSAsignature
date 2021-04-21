@@ -43,26 +43,11 @@ largeIntegerType cryptData(largeIntegerType data, std::pair<largeIntegerType, la
     }
 
     return fastPow(data, _publicKey.first, _publicKey.second);
-   /* for (largeIntegerType i = 0; i < _publicKey.first; ++i)
-    {
-        cryptedData *= data;
-        cryptedData %= _publicKey.second;
-    }
-
-    return cryptedData;*/
 }
 
 largeIntegerType encryptData(largeIntegerType data, std::pair<largeIntegerType, largeIntegerType> _privateKey)
 {
     return fastPow(data, _privateKey.first, _privateKey.second);
-   /* largeIntegerType encryptedData = 1;
-    for (largeIntegerType i = 0; i < _privateKey.first; ++i)
-    {
-        encryptedData *= data;
-        encryptedData %= _privateKey.second;
-    }
-
-    return encryptedData;*/
 }
 
 std::vector<largeIntegerType> cryptMessage(std::string data, std::pair<largeIntegerType, largeIntegerType> _publicKey)

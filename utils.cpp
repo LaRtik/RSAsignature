@@ -27,14 +27,7 @@ bool prime(largeIntegerType n)
 
 largeIntegerType fastPow(largeIntegerType a, largeIntegerType step, largeIntegerType mod)
 {
-    largeIntegerType ans = 1;
-    for (largeIntegerType i = 0; i < step; i++)
-    {
-        ans *= a;
-        ans %= mod;
-    }
-    return ans;
-   /* if (step == 0)
+    if (step == 0)
     {
         return 1;
     }
@@ -47,5 +40,10 @@ largeIntegerType fastPow(largeIntegerType a, largeIntegerType step, largeInteger
         largeIntegerType b = fastPow(a, step / 2, mod);
         b %= mod;
         return (b * b)%mod;
-    }*/
+    }
+}
+
+char to_string(largeIntegerType a)
+{
+    return a + '0';
 }
