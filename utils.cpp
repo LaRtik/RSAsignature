@@ -1,6 +1,5 @@
 #include "utils.h"
 
-#include <cmath>
 
 largeIntegerType gcd(largeIntegerType a, largeIntegerType b)
 {
@@ -43,7 +42,9 @@ largeIntegerType fastPow(largeIntegerType a, largeIntegerType step, largeInteger
     }
 }
 
-char to_string(largeIntegerType a)
+std::string to_string(std::vector <largeIntegerType> a)
 {
-    return a + '0';
+    std::string ans;
+    for (auto i:a) ans+= i + '0';
+    return ans;
 }

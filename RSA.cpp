@@ -3,9 +3,15 @@
 Keys calculateRSAKeys()
 {
     largeIntegerType p = rand() % 10000 + 500;
-    while (!prime(p)) { ++p; }
+    while (!prime(p))
+    {
+        ++p;
+    }
     largeIntegerType q = rand() % 10000 + 500;
-    while (!prime(q)) { ++q; }
+    while (!prime(q))
+    {
+        ++q;
+    }
 
     largeIntegerType n = p * q;
 
@@ -31,7 +37,7 @@ Keys calculateRSAKeys()
         }
     }
 
-    Keys keys{ std::pair<largeIntegerType, largeIntegerType> {e, n}, std::pair<largeIntegerType, largeIntegerType> {d, n} };
+    Keys keys{std::pair<largeIntegerType, largeIntegerType>{e, n}, std::pair<largeIntegerType, largeIntegerType>{d, n}};
     return keys;
 }
 
@@ -51,8 +57,8 @@ largeIntegerType encryptData(largeIntegerType data, std::pair<largeIntegerType, 
 }
 
 std::vector<largeIntegerType> cryptMessage(std::string data, std::pair<largeIntegerType, largeIntegerType> _publicKey)
-{ 
-    std::vector<largeIntegerType> cryptedMessage; 
+{
+    std::vector<largeIntegerType> cryptedMessage;
     cryptedMessage.reserve(data.size());
 
     for (char element : data)
@@ -75,4 +81,32 @@ std::string encryptMessage(std::vector<largeIntegerType> data, std::pair<largeIn
     return encryptedMessage;
 }
 
+std::vector<largeIntegerType> confuseData(std::string data, std::pair<largeIntegerType, largeIntegerType> _anyKey)
+{
+    std::vector<largeIntegerType> confusedData;
+    confusedData.reserve(data.size());
+    if (data.size() == 0)
+    {
+        return confusedData;
+    }
 
+    largeIntegerType startValue = rand() % 10000 + 100;
+    confusedData.push_back(startValue);
+
+    for (int i = 0; i < data.size(); ++i)
+    {
+        confusedData.push_back(((largeIntegerType)data[i] + confusedData[i]) % _anyKey.second);
+    }
+    return confusedData;
+}
+
+std::string deconfuseData(std::vector<largeIntegerType> confusedData, std::pair<largeIntegerType, largeIntegerType> _anyKey)
+{
+    std::string data;
+
+    for (int i = 1; i < confusedData.size(); ++i)
+    {
+        data.push_back((confusedData[i] - confusedData[i - 1]) % _anyKey.second);
+    }
+    return data;
+}
