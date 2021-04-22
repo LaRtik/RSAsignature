@@ -44,11 +44,6 @@ Keys calculateRSAKeys()
 
 largeIntegerType cryptData(largeIntegerType data, std::pair<largeIntegerType, largeIntegerType> _publicKey)
 {
-    if (data > _publicKey.second)
-    {
-        throw std::runtime_error("Invalid data");
-    }
-
     return fastPow(data, _publicKey.first, _publicKey.second);
 }
 
