@@ -2,12 +2,12 @@
 
 Keys calculateRSAKeys()
 {
-    largeIntegerType p = rand() % 100000 + 500;
+    largeIntegerType p = rand() % 10000 + 10000;
     while (!prime(p))
     {
         ++p;
     }
-    largeIntegerType q = rand() % 10000 + 500;
+    largeIntegerType q = rand() % 10000 + 10000;
     while (!prime(q))
     {
         ++q;
@@ -94,7 +94,7 @@ std::vector<largeIntegerType> confuseData(std::string data, std::pair<largeInteg
 
     for (int i = 0; i < data.size(); ++i)
     {
-        confusedData.push_back(((largeIntegerType)data[i] + confusedData[i]) % _anyKey.second);
+        confusedData.push_back(((largeIntegerType)data[i] + confusedData[i]) % _anyKey.second % 256);
     }
     return confusedData;
 }
@@ -105,7 +105,7 @@ std::string deconfuseData(std::string confusedData, std::pair<largeIntegerType, 
 
     for (int i = 1; i < confusedData.size(); ++i)
     {
-        data.push_back((confusedData[i] - confusedData[i - 1]) % _anyKey.second);
+        data.push_back((confusedData[i] - confusedData[i - 1]) % _anyKey.second % 256);
     }
     return data;
 }
