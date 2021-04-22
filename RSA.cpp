@@ -2,16 +2,17 @@
 
 Keys calculateRSAKeys()
 {
-    largeIntegerType p = rand() % 10000 + 10000;
-    while (!prime(p))
+    std::vector <largeIntegerType> primes(1034);
+    std::ifstream fin("primes.txt");
+    for(int i = 0; i < 1033; i++)
     {
-        ++p;
+        int temp;
+        fin >> temp;
+        primes[i] = temp;
     }
-    largeIntegerType q = rand() % 10000 + 10000;
-    while (!prime(q))
-    {
-        ++q;
-    }
+
+    largeIntegerType p = primes[rand() % 1033];
+    largeIntegerType q = primes[rand() % 1033];
 
     largeIntegerType n = p * q;
 
