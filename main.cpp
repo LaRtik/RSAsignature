@@ -12,6 +12,7 @@ int main()
     srand(static_cast<unsigned>(time(0))); // better random
 
     Keys keys = calculateRSAKeys(); // calculate RSA private and public keys
+    std::cout << "Calculated RSA keys!" << "\n";
 
     /*
     ----------------------
@@ -25,19 +26,26 @@ int main()
     std::cout << "Message: " << message << "\n";
 
     // also let's confuse message
-    message = to_string(confuseData(message, keys._public));
-    std::cout << "Confused message: " << message << "\n";
-    std::vector<largeIntegerType> cryptedMessage = cryptMessage(message, keys._public); // crypting message using public key
-    std::cout << "Crypted message: ";
-    for (auto i:cryptedMessage) std::cout << i << " ";
-    std::cout << "\n"; 
-    std::cout << "Encrypted spoiled message: " << encryptMessage(cryptedMessage, keys._private) << "\n";
+    std::vector <largeIntegerType> confusedMessage;
+    confusedMessage = confuseData(message, keys._public);
+    std::cout << "Confused message: ";
+    for (auto i : confusedMessage) std::cout << i << " ";
+    std::cout << "\n";
 
+    // crypt confused message
+    std::vector<largeIntegerType> cryptedConfusedMessage = cryptMessage(confusedMessage, keys._public);
+    std::cout << "Crypted confused message: ";
+    for (auto i : cryptedConfusedMessage) std::cout << i << " ";
+    std::cout << "\n";
+    std::string encryptedConfusedMessage = encryptMessage(cryptedConfusedMessage, keys._private);
+    std::cout << "Encrypted confused message: " << encryptedConfusedMessage << "\n";
     // don't forget to deconfuse message
-    std::cout << "Encrypted original message: " << deconfuseData(cryptedMessage, keys._private) << "\n";
+    std::cout << "Encrypted original message: " << deconfuseData(encryptedConfusedMessage, keys._public) << "\n";
+
+
     // try to encrypt message with invalid secrey key (let use public key instead private key)
 
-    std::cout << "Encrypted message with invalid private key (let use public key): " << encryptMessage(cryptedMessage, keys._public) << "\n\n"; // encrypring message with bad key
+    std::cout << "Encrypted original message with invalid private key (let use public key): " << deconfuseData(encryptMessage(cryptedConfusedMessage, keys._public), keys._public) << "\n\n\n"; // encrypring message with bad key
 
 
 
@@ -51,20 +59,22 @@ int main()
     std::cout << "Creating sign without crypting original message\n\n";
 
     // let's use the same confused message ("Hello text") and the same RSA keys
-    std::cout << "Confused message: " << message << "\n";
+    std::cout << "Confused message: ";
+    for (auto i : confusedMessage) std::cout << i << " ";
+    std::cout << "\n";
 
-    
     // create sign using private key
-    std::vector <largeIntegerType> sign = cryptMessage(message, keys._private); // creating sign with private key
+    std::vector <largeIntegerType> sign = cryptMessage(confusedMessage, keys._private); // creating sign with private key
     std::cout << "Sign: ";
-    std::for_each(sign.begin(), sign.end(), [](const largeIntegerType& el) -> void {std::cout << el << " "; }); // printing sign
+    for (auto i : sign) std::cout << i << " ";
     std::cout << "\n"; 
 
     // encrypt message with public key (only sender knows private key, everyone else know public key)
-    std::string messagePrototype = encryptMessage(sign, keys._public);
-
-    std::cout << "Confused message prototype (encrypted sign): " << messagePrototype << "\n";
-    if (messagePrototype == message)
+    std::string confusedMessagePrototype = encryptMessage(sign, keys._public);
+    std::cout << "Confused message prototype (encrypted sign): " << confusedMessagePrototype << "\n";
+    std::string originalMessagePrototype = deconfuseData(confusedMessagePrototype, keys._public);
+    std::cout << "Original message prototype: " << originalMessagePrototype << "\n";
+    if (originalMessagePrototype == message)
     {
         std::cout << "Message and message prototype are equal. Signed succesfully!\n\n"; 
     }
@@ -72,7 +82,6 @@ int main()
     {
         std::cout << "Sign is bad. Try again =(\n\n";
     }
-
 
     /*
     ------------------------
@@ -92,34 +101,33 @@ int main()
     std::cout << "Message: " << message << "\n";
 
     // confuse message
-    message = to_string(confuseData(message, senderKeys._public));
-    std::cout << "Confused message: " << message << "\n";
-
+    confusedMessage = confuseData(message, senderKeys._public);
+    std::cout << "Confused message: ";
+    for (auto i : confusedMessage) std::cout << i << " ";
+    std::cout << "\n";
 
     // create new sign using sender private key
-    std::vector <largeIntegerType> senderSign = cryptMessage(message, senderKeys._private);
-    std::string senderSignString = to_string(senderSign);
-    std::cout << "Sender sign: " << senderSignString << "\n";
-
-
+    std::vector <largeIntegerType> senderSign = cryptMessage(confusedMessage, senderKeys._private);
+    std::cout << "Sender sign: ";
+    for (auto i : senderSign) std::cout << i << " ";
+    std::cout << "\n";
 
     // crypt senderSign and message using receiver public key
 
-    std::vector <largeIntegerType> cryptedSenderSign = cryptMessage(senderSignString, receiverKeys._public);
-    std::vector <largeIntegerType> cryptedMessage_1 = cryptMessage(message, receiverKeys._public);
+    std::vector <largeIntegerType> cryptedSenderSign = cryptMessage(senderSign, receiverKeys._public);
+    cryptedConfusedMessage = cryptMessage(confusedMessage, receiverKeys._public);
     std::cout << "Crypted sender sign: ";
     for (auto i:cryptedSenderSign) std::cout << i << " ";
     std::cout << "\n"; 
 
-    std::cout << "Crypted message: ";
-    for (auto i:cryptedMessage_1) std::cout << i << " ";
+    std::cout << "Crypted confused message: ";
+    for (auto i:cryptedConfusedMessage) std::cout << i << " ";
     std::cout << "\n";
-
-
     // encrypt senderSign and message using receiver private key
     std::cout << "Encrypted sender sign: " << encryptMessage(cryptedSenderSign, receiverKeys._private) << "\n";
-    std::cout << "Encrypted confused message: " << encryptMessage(cryptedMessage_1, receiverKeys._private) << "\n";
-    std::cout << "Encrypted original message: " << deconfuseData(cryptedMessage_1, receiverKeys._private) << "\n";
+    std::cout << "Encrypted confused message: " << encryptMessage(cryptedConfusedMessage, receiverKeys._private) << "\n";
+    std::cout << "Encrypted original message: " << deconfuseData(encryptMessage(cryptedConfusedMessage, receiverKeys._private), senderKeys._public) << "\n";
+
 
     end = clock();
     std::cout << "\n\n\nExecution time: " << double(end - start) / CLOCKS_PER_SEC << " secs.";

@@ -2,7 +2,7 @@
 
 Keys calculateRSAKeys()
 {
-    largeIntegerType p = rand() % 10000 + 500;
+    largeIntegerType p = rand() % 100000 + 500;
     while (!prime(p))
     {
         ++p;
@@ -56,12 +56,11 @@ largeIntegerType encryptData(largeIntegerType data, std::pair<largeIntegerType, 
     return fastPow(data, _privateKey.first, _privateKey.second);
 }
 
-std::vector<largeIntegerType> cryptMessage(std::string data, std::pair<largeIntegerType, largeIntegerType> _publicKey)
+std::vector<largeIntegerType> cryptMessage(std::vector <largeIntegerType> data, std::pair<largeIntegerType, largeIntegerType> _publicKey)
 {
     std::vector<largeIntegerType> cryptedMessage;
     cryptedMessage.reserve(data.size());
-
-    for (char element : data)
+    for (auto element : data)
     {
         cryptedMessage.push_back(cryptData(element, _publicKey));
     }
@@ -100,7 +99,7 @@ std::vector<largeIntegerType> confuseData(std::string data, std::pair<largeInteg
     return confusedData;
 }
 
-std::string deconfuseData(std::vector<largeIntegerType> confusedData, std::pair<largeIntegerType, largeIntegerType> _anyKey)
+std::string deconfuseData(std::string confusedData, std::pair<largeIntegerType, largeIntegerType> _anyKey)
 {
     std::string data;
 
